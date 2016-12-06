@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: leetcode_spider
+  jmx:
+    enabled: false
+  datasource:
+    mongo:
+      username: root
+      password: ll1992917
+      replica-set:
+        - 47.90.63.120:27017
+      db: admin
