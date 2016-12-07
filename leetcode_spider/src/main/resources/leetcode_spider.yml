@@ -7,6 +7,6 @@ spring:
     mongo:
       username: root
       password: ll1992917
-      replica-set:
+      replicaSet:
         - 47.90.63.120:27017
       db: admin

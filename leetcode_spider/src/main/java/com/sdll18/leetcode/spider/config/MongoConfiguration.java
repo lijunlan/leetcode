@@ -21,7 +21,7 @@ import java.util.List;
  * @Date: 2016-12-06
  */
 @Configuration
-@ConfigurationProperties(prefix = "mongo")
+@ConfigurationProperties(prefix = "spring.datasource.mongo")
 public class MongoConfiguration {
 
     @NotNull
@@ -37,6 +37,22 @@ public class MongoConfiguration {
     @NotNull
     @NotEmpty
     private String db;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setReplicaSet(List<String> replicaSet) {
+        this.replicaSet = replicaSet;
+    }
+
+    public void setDb(String db) {
+        this.db = db;
+    }
 
     @Bean
     public MongoClientFactoryBean mongo() {
