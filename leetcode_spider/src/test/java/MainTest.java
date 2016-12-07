@@ -34,7 +34,7 @@ public class MainTest {
 
     @Test
     public void listProblemList() {
-        System.out.println("started");
+        logger.info("list problem list started!");
         ResponseEntity<String> entity = restTemplate.getForEntity("https://leetcode.com/api/problems/algorithms/", String.class);
         String content = entity.getBody();
         JSONObject jsonObject = JSON.parseObject(content);
@@ -53,10 +53,13 @@ public class MainTest {
             do {
                 result = problemListService.saveProblemList((JSONObject) JSON.toJSON(list));
             } while (result.getIntValue("code") == Code.ERROR_SAVE_FAILED);
-            logger.info(result);
-            System.out.println(result);
         }
         logger.info("list problem list finished!");
-        System.out.println("list problem list finished!");
     }
+
+    public void listProblem() {
+
+    }
+
+
 }
