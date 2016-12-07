@@ -1,16 +1,13 @@
 package com.sdll18.leetcode.spider.config;
 
 import com.mongodb.*;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,64 +18,21 @@ import java.util.List;
  * @Date: 2016-12-06
  */
 @Configuration
-@ConfigurationProperties(prefix = "spring.datasource.mongo")
 public class MongoConfiguration {
 
-    @NotNull
-    @NotEmpty
-    private String username;
-
-    @NotNull
-    @NotEmpty
-    private String password;
-
-    private List<String> replicaSet = new ArrayList<>();
-
-    @NotNull
-    @NotEmpty
-    private String db;
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setReplicaSet(List<String> replicaSet) {
-        this.replicaSet = replicaSet;
-    }
-
-    public void setDb(String db) {
-        this.db = db;
-    }
-
-    @Bean
-    public MongoClientFactoryBean mongo() {
-        MongoClientFactoryBean mongo = new MongoClientFactoryBean();
-        MongoCredential credential = MongoCredential.createCredential(username, db, password.toCharArray());
-        mongo.setCredentials(new MongoCredential[]{credential});
-        ServerAddress[] addresses = new ServerAddress[replicaSet.size()];
-        for (int i = 0; i < replicaSet.size(); i++) {
-            String rs = replicaSet.get(i);
-            ServerAddress address = new ServerAddress(rs.split(":")[0], Integer.valueOf(rs.split(":")[1]));
-            addresses[i] = address;
-        }
-        mongo.setReplicaSetSeeds(addresses);
-        return mongo;
-    }
+    @Autowired
+    private DataSource dataSource;
 
     @Bean
     public MongoClient mongoClient() throws Exception {
-        List<ServerAddress> seeds = new ArrayList<>(replicaSet.size());
-        for (String rs : replicaSet) {
+        List<ServerAddress> seeds = new ArrayList<>(dataSource.getReplicaSet().size());
+        for (String rs : dataSource.getReplicaSet()) {
             String[] adr = rs.split(":");
             ServerAddress address = new ServerAddress(adr[0], Integer.valueOf(adr[1]));
             seeds.add(address);
         }
         List<MongoCredential> credentialsList = new ArrayList<>(1);
-        credentialsList.add(MongoCredential.createCredential(username, db, password.toCharArray()));
+        credentialsList.add(MongoCredential.createCredential(dataSource.getUsername(), dataSource.getDb(), dataSource.getPassword().toCharArray()));
         MongoClientOptions mongoClientOptions = MongoClientOptions.builder().
                 connectionsPerHost(20).
                 threadsAllowedToBlockForConnectionMultiplier(10).
@@ -92,7 +46,7 @@ public class MongoConfiguration {
 
     @Bean
     public MongoDbFactory mongoDbFactory() throws Exception {
-        return new SimpleMongoDbFactory(mongoClient(), db);
+        return new SimpleMongoDbFactory(mongoClient(), dataSource.getUserDb());
     }
 
     @Bean

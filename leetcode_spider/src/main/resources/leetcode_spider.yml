@@ -10,3 +10,4 @@ spring:
       replicaSet:
         - 47.90.63.120:27017
       db: admin
+      userDb: leetcode
