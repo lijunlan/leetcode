@@ -79,4 +79,12 @@ public interface BaseDao<T> {
      * @return
      */
     long count(Query query);
+
+    /**
+     * 删除数据
+     *
+     * @param query
+     * @return
+     */
+    long delete(Query query);
 }

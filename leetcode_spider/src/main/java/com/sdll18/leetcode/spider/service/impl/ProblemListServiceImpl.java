@@ -8,7 +8,7 @@ import com.sdll18.leetcode.spider.model.ProblemList;
 import com.sdll18.leetcode.spider.model.page.Page;
 import com.sdll18.leetcode.spider.service.ProblemListService;
 import com.sdll18.leetcode.spider.util.FastJsonUtil;
-import com.sdll18.leetcode.spider.util.PageToJSON;
+import com.sdll18.leetcode.spider.util.PageToJSONUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -86,7 +86,7 @@ public class ProblemListServiceImpl implements ProblemListService {
             page.setPageStart(start);
             page.setPageEnd(end);
             page = problemListDao.findPage(page, query);
-            JSONObject r = PageToJSON.getJSON(page);
+            JSONObject r = PageToJSONUtil.getJSON(page);
             return FastJsonUtil.success(r);
         } catch (Exception e) {
             logger.error("list problem list failed", e);

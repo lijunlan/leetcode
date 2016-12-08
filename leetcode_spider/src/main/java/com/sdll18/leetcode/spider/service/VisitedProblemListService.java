@@ -13,4 +13,11 @@ public interface VisitedProblemListService {
     JSONObject isVisited(JSONObject jsonObject);
 
     JSONObject visited(JSONObject jsonObject);
+
+    JSONObject deleteAll();
+
+    JSONObject delete(JSONObject jsonObject);
+
+    JSONObject listVisited(JSONObject jsonObject);
+
 }

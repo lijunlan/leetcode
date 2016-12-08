@@ -1,5 +1,6 @@
 package com.sdll18.leetcode.spider.dao.impl;
 
+import com.mongodb.WriteResult;
 import com.sdll18.leetcode.spider.dao.BaseDao;
 import com.sdll18.leetcode.spider.model.page.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,12 @@ public abstract class BaseMongoDaoImpl<T> implements BaseDao<T> {
     @Override
     public long count(Query query) {
         return mongoTemplate.count(query, getEntityClass());
+    }
+
+    @Override
+    public long delete(Query query) {
+        WriteResult result = mongoTemplate.remove(query, getEntityClass());
+        return result.getN();
     }
 
     abstract protected Class<T> getEntityClass();

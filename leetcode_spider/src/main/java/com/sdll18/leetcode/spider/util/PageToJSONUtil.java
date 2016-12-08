@@ -9,7 +9,7 @@ import com.sdll18.leetcode.spider.model.page.Page;
  * @Author: junlanli@sohu-inc.com
  * @Date: 2016-12-07
  */
-public final class PageToJSON {
+public final class PageToJSONUtil {
 
     public static JSONObject getJSON(Page page) {
         JSONObject r = new JSONObject();

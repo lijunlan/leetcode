@@ -5,10 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sdll18.leetcode.spider.constant.Code;
 import com.sdll18.leetcode.spider.model.ProblemList;
+import com.sdll18.leetcode.spider.model.VisitedProblemList;
 import com.sdll18.leetcode.spider.service.CrawlerService;
 import com.sdll18.leetcode.spider.service.ProblemListService;
 import com.sdll18.leetcode.spider.service.ProblemService;
+import com.sdll18.leetcode.spider.service.VisitedProblemListService;
 import com.sdll18.leetcode.spider.util.FastJsonUtil;
+import com.sdll18.leetcode.spider.util.JudgeResultUtil;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,6 +43,9 @@ public class CrawlerServiceImpl implements CrawlerService {
     @Autowired
     private ProblemService problemService;
 
+    @Autowired
+    private VisitedProblemListService visitedProblemListService;
+
     @Override
     public JSONObject crawlProblem(JSONObject jsonObject) {
         try {
@@ -69,24 +75,42 @@ public class CrawlerServiceImpl implements CrawlerService {
         try {
             int successNumber = 0;
             int failedNumber = 0;
+            int ignoreNumber = 0;
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("start", 0);
             jsonObject.put("end", 500);
             JSONObject r = problemListService.listProblemList(jsonObject);
-            if (r.getIntValue("code") == Code.SUCCESS) {
+            if (JudgeResultUtil.getResult(r)) {
                 JSONArray array = r.getJSONObject("data").getJSONArray("list");
                 for (int i = 0; i < array.size(); i++) {
                     JSONObject object = array.getJSONObject(i);
-                    JSONObject result = crawlProblem(object);
-                    if (result.getIntValue("code") == Code.SUCCESS) {
-                        successNumber++;
+                    JSONObject r2 = visitedProblemListService.isVisited(object);
+                    if (JudgeResultUtil.getResult(r2)) {
+                        if (r2.getJSONObject("data").getBoolean("visited")) {
+                            ignoreNumber++;
+                            continue;
+                        }
+                        JSONObject result = crawlProblem(object);
+                        if (result.getIntValue("code") == Code.SUCCESS) {
+                            successNumber++;
+                            VisitedProblemList visitedProblemList = new VisitedProblemList();
+                            visitedProblemList.setNumber(object.getInteger("number"));
+                            JSONObject r3 = visitedProblemListService.visited((JSONObject) JSON.toJSON(visitedProblemList));
+                            if (!JudgeResultUtil.getResult(r3)) {
+                                logger.error(r3);
+                            }
+                        } else {
+                            failedNumber++;
+                        }
                     } else {
                         failedNumber++;
+                        logger.error(r2);
                     }
                 }
                 JSONObject toReturn = new JSONObject();
                 toReturn.put("successNumber", successNumber);
                 toReturn.put("failedNumber", failedNumber);
+                toReturn.put("ignoreNumber", ignoreNumber);
                 return FastJsonUtil.success(toReturn);
             } else {
                 return r;

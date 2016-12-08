@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.sdll18.leetcode.spider.constant.Code;
 import com.sdll18.leetcode.spider.dao.ProblemDao;
 import com.sdll18.leetcode.spider.model.Problem;
+import com.sdll18.leetcode.spider.model.page.Page;
 import com.sdll18.leetcode.spider.service.ProblemService;
 import com.sdll18.leetcode.spider.util.FastJsonUtil;
+import com.sdll18.leetcode.spider.util.PageToJSONUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -78,11 +81,43 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public JSONObject listProblem(JSONObject jsonObject) {
-        return null;
+        try {
+            Integer start = jsonObject.getInteger("start");
+            Integer end = jsonObject.getInteger("end");
+            Page<Problem> page = new Page<>();
+            page.setPageStart(start);
+            page.setPageEnd(end);
+            Query q = new Query();
+            q.with(new Sort(new Sort.Order(Sort.Direction.DESC, "updateTime")));
+            page = problemDao.findPage(page, q);
+            return FastJsonUtil.success(PageToJSONUtil.getJSON(page));
+        } catch (Exception e) {
+            logger.error("list problem failed", e);
+            return FastJsonUtil.error(Code.ERROR_INTERNAL);
+        }
     }
 
     @Override
     public JSONObject findProblem(JSONObject jsonObject) {
-        return null;
+        try {
+            String id = jsonObject.getString("id");
+            Integer number = jsonObject.getInteger("number");
+            if (number != null) {
+                Problem problem = problemDao.findOne(new Query(Criteria.where("number").is(number)));
+                if (problem == null) {
+                    return FastJsonUtil.error(Code.ERROR_ID_NOT_EXISTED, "problem number is not existed");
+                }
+                return FastJsonUtil.success(problem);
+            } else {
+                Problem problem = problemDao.findById(id);
+                if (problem == null) {
+                    return FastJsonUtil.error(Code.ERROR_ID_NOT_EXISTED, "problem id is not existed");
+                }
+                return FastJsonUtil.success(problem);
+            }
+        } catch (Exception e) {
+            logger.error("failed to find problem", e);
+            return FastJsonUtil.error(Code.ERROR_INTERNAL);
+        }
     }
 }
