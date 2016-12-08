@@ -10,6 +10,8 @@ public interface Code {
 
     int SUCCESS = 200;
 
+    int ERROR_ID_NOT_EXISTED = 400;
+
     int ERROR_INTERNAL = 500;
 
     int ERROR_SAVE_FAILED = 501;

@@ -47,7 +47,7 @@ public class VisitedProblemListServiceImpl implements VisitedProblemListService 
                 return FastJsonUtil.success(r);
             }
         } catch (Exception e) {
-            logger.info("find isVisited failed", e);
+            logger.error("find isVisited failed", e);
             return FastJsonUtil.error(Code.ERROR_INTERNAL);
         }
     }
@@ -64,7 +64,7 @@ public class VisitedProblemListServiceImpl implements VisitedProblemListService 
             visitedProblemListDao.save(visitedProblemList);
             return FastJsonUtil.success();
         } catch (Exception e) {
-            logger.info("save visited failed", e);
+            logger.error("save visited failed", e);
             return FastJsonUtil.error(Code.ERROR_INTERNAL);
         }
     }

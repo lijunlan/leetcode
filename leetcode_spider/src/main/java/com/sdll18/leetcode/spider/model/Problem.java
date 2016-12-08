@@ -1,5 +1,6 @@
 package com.sdll18.leetcode.spider.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -16,18 +17,27 @@ import java.util.Date;
 public class Problem {
 
     @Id
+    @JSONField
     private String id;
 
     @Field
+    @JSONField
+    private Integer number;
+
+    @Field
+    @JSONField
     private String content;
 
     @Field
+    @JSONField
     private String name;
 
     @Field
+    @JSONField
     private Integer version;
 
     @Field
+    @JSONField
     private Date updateTime;
 
     public String getId() {
@@ -70,10 +80,19 @@ public class Problem {
         this.updateTime = updateTime;
     }
 
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
     @Override
     public String toString() {
         return "Problem{" +
                 "id='" + id + '\'' +
+                ", number=" + number +
                 ", content='" + content + '\'' +
                 ", name='" + name + '\'' +
                 ", version=" + version +

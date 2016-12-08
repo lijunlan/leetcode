@@ -70,7 +70,7 @@ public class ProblemListServiceImpl implements ProblemListService {
                 return FastJsonUtil.success(r);
             }
         } catch (Exception e) {
-            logger.error("save problem list failed");
+            logger.error("save problem list failed", e);
             return FastJsonUtil.error(Code.ERROR_INTERNAL);
         }
     }
@@ -81,7 +81,7 @@ public class ProblemListServiceImpl implements ProblemListService {
             Integer start = jsonObject.getInteger("start");
             Integer end = jsonObject.getInteger("end");
             Query query = new Query();
-            query.with(new Sort(new Sort.Order(Sort.Direction.ASC, "number")));
+            query.with(new Sort(new Sort.Order(Sort.Direction.DESC, "updateTime")));
             Page<ProblemList> page = new Page<>();
             page.setPageStart(start);
             page.setPageEnd(end);
@@ -89,13 +89,33 @@ public class ProblemListServiceImpl implements ProblemListService {
             JSONObject r = PageToJSON.getJSON(page);
             return FastJsonUtil.success(r);
         } catch (Exception e) {
-            logger.error("list problem list failed");
+            logger.error("list problem list failed", e);
             return FastJsonUtil.error(Code.ERROR_INTERNAL);
         }
     }
 
     @Override
     public JSONObject findProblemList(JSONObject jsonObject) {
-        return null;
+        try {
+            Integer number = jsonObject.getInteger("number");
+            String id = jsonObject.getString("id");
+            if (id != null) {
+                ProblemList problemList = problemListDao.findById(id);
+                if (problemList == null) {
+                    return FastJsonUtil.error(Code.ERROR_ID_NOT_EXISTED, "problem list id is not existed");
+                }
+                return FastJsonUtil.success(problemList);
+            } else {
+                Query query = new Query(Criteria.where("number").is(number));
+                ProblemList problemList = problemListDao.findOne(query);
+                if (problemList == null) {
+                    return FastJsonUtil.error(Code.ERROR_ID_NOT_EXISTED, "problem list number is not existed");
+                }
+                return FastJsonUtil.success(problemList);
+            }
+        } catch (Exception e) {
+            logger.error("find problem list failed", e);
+            return FastJsonUtil.error(Code.ERROR_INTERNAL);
+        }
     }
 }
