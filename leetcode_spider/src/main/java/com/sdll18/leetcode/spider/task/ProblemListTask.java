@@ -38,6 +38,12 @@ public class ProblemListTask extends Thread {
     @Autowired
     private TaskService taskService;
 
+    private String head;
+
+    public ProblemListTask(String head) {
+        this.head = head;
+    }
+
     @Override
     public void run() {
         int successNumber = 0;
@@ -64,7 +70,7 @@ public class ProblemListTask extends Thread {
                         ignoreNumber++;
                         continue;
                     }
-                    JSONObject result = crawlerService.crawlProblem(object);
+                    JSONObject result = crawlerService.crawlProblem(head, object);
                     if (result.getIntValue("code") == Code.SUCCESS) {
                         VisitedProblemList visitedProblemList = new VisitedProblemList();
                         visitedProblemList.setNumber(object.getInteger("number"));

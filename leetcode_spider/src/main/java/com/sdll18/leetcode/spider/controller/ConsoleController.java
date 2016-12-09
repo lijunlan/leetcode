@@ -1,6 +1,7 @@
 package com.sdll18.leetcode.spider.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sdll18.leetcode.spider.constant.Code;
 import com.sdll18.leetcode.spider.service.CrawlerService;
 import com.sdll18.leetcode.spider.service.ProblemListService;
 import com.sdll18.leetcode.spider.service.VisitedProblemListService;
@@ -38,21 +39,28 @@ public class ConsoleController {
 
     @RequestMapping(path = "/problem/start", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject problemStartAll() {
-        ProblemListTask task = new ProblemListTask();
+    public JSONObject problemStartAll(@RequestBody JSONObject data) {
+        if (data.getString("head") == null)
+            return FastJsonUtil.error(Code.ERROR_MISSING_PARAMETERS, "key of head is not presented");
+        String head = data.getString("head");
+        ProblemListTask task = new ProblemListTask(head);
         task.start();
         return FastJsonUtil.success();
     }
 
     @RequestMapping(path = "/problem/start/{number}", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject problemStart(@PathVariable Integer number) {
+    public JSONObject problemStart(@PathVariable Integer number,
+                                   @RequestBody JSONObject data) {
+        if (data.getString("head") == null)
+            return FastJsonUtil.error(Code.ERROR_MISSING_PARAMETERS, "key of head is not presented");
+        String head = data.getString("head");
         JSONObject inData = new JSONObject();
         inData.put("number", number);
         JSONObject r = problemListService.findProblemList(inData);
         if (JudgeResultUtil.getResult(r)) {
-            JSONObject data = r.getJSONObject("data");
-            JSONObject r2 = crawlerService.crawlProblem(data);
+            JSONObject d1 = r.getJSONObject("data");
+            JSONObject r2 = crawlerService.crawlProblem(head, d1);
             return r2;
         } else {
             return r;

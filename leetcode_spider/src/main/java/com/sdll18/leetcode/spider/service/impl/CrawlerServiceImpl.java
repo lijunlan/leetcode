@@ -15,13 +15,15 @@ import com.sdll18.leetcode.spider.util.JudgeResultUtil;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright (C) 2015 - 2016 SOHU FOCUS Inc., All Rights Reserved.
@@ -47,13 +49,16 @@ public class CrawlerServiceImpl implements CrawlerService {
     private VisitedProblemListService visitedProblemListService;
 
     @Override
-    public JSONObject crawlProblem(JSONObject jsonObject) {
+    public JSONObject crawlProblem(String head, JSONObject jsonObject) {
         try {
             ProblemList problemList = JSON.toJavaObject(jsonObject, ProblemList.class);
-            URL url = new URL("https://leetcode.com" + problemList.getPath());
-            Document doc = Jsoup.parse(url, 3000);
-            Element contentElement = doc.select("div.question-content").first();
-            String content = contentElement.html();
+            String[] heads = head.split(",");
+            Map<String, String> headMap = new HashMap<>();
+            headMap.put(heads[0].split(":")[0], heads[0].split(":")[1]);
+            headMap.put(heads[1].split(":")[0], heads[1].split(":")[1]);
+            Document doc = Jsoup.connect("https://leetcode.com" + problemList.getPath()).headers(headMap).timeout(3000).get();
+            Elements contentElement = doc.select("div.question-content");
+            String content = contentElement.first().html();
             JSONObject inData = new JSONObject();
             inData.put("number", problemList.getNumber());
             inData.put("name", problemList.getName());
@@ -71,7 +76,7 @@ public class CrawlerServiceImpl implements CrawlerService {
     }
 
     @Override
-    public JSONObject crawlAllProblem() {
+    public JSONObject crawlAllProblem(String head) {
         try {
             int successNumber = 0;
             int failedNumber = 0;
@@ -90,7 +95,7 @@ public class CrawlerServiceImpl implements CrawlerService {
                             ignoreNumber++;
                             continue;
                         }
-                        JSONObject result = crawlProblem(object);
+                        JSONObject result = crawlProblem(head, object);
                         if (result.getIntValue("code") == Code.SUCCESS) {
                             successNumber++;
                             VisitedProblemList visitedProblemList = new VisitedProblemList();

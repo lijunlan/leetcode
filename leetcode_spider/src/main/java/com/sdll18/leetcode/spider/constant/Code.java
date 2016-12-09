@@ -14,6 +14,8 @@ public interface Code {
 
     int ERROR_STATUS_WRONG = 401;
 
+    int ERROR_MISSING_PARAMETERS = 402;
+
     int ERROR_INTERNAL = 500;
 
     int ERROR_SAVE_FAILED = 501;
