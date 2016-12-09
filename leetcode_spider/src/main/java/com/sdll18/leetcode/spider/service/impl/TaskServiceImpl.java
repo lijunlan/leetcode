@@ -75,6 +75,10 @@ public class TaskServiceImpl implements TaskService {
         try {
             Integer status = jsonObject.getInteger("status");
             String infoId = jsonObject.getString("id");
+            Integer successNumber = jsonObject.getInteger("successNumber");
+            Integer failedNumber = jsonObject.getInteger("failedNumber");
+            Integer ignoreNumber = jsonObject.getInteger("ignoreNumber");
+
             Task task = taskDao.findById(infoId);
             if (task == null) {
                 return FastJsonUtil.error(Code.ERROR_ID_NOT_EXISTED, "task id is not existed");
@@ -82,6 +86,9 @@ public class TaskServiceImpl implements TaskService {
             if (task.getStatus().intValue() != 0) {
                 return FastJsonUtil.error(Code.ERROR_STATUS_WRONG, "task has been closed before");
             }
+            task.setSuccessNumber(successNumber);
+            task.setFailedNumber(failedNumber);
+            task.setIgnoreNumber(ignoreNumber);
             task.setStatus(status);
             task.setEndTime(Calendar.getInstance(Locale.CHINA).getTime());
             taskDao.save(task);

@@ -1,7 +1,17 @@
 package com.sdll18.leetcode.spider.task;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sdll18.leetcode.spider.constant.Code;
+import com.sdll18.leetcode.spider.model.Task;
+import com.sdll18.leetcode.spider.model.VisitedProblemList;
 import com.sdll18.leetcode.spider.service.CrawlerService;
+import com.sdll18.leetcode.spider.service.ProblemListService;
+import com.sdll18.leetcode.spider.service.TaskService;
+import com.sdll18.leetcode.spider.service.VisitedProblemListService;
+import com.sdll18.leetcode.spider.util.FastJsonUtil;
+import com.sdll18.leetcode.spider.util.JudgeResultUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,25 +22,76 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Author: junlanli@sohu-inc.com
  * @Date: 2016-12-06
  */
-public class ProblemListTask {
+public class ProblemListTask extends Thread {
 
     private static Logger logger = Logger.getLogger(ProblemListTask.class);
 
     @Autowired
     private CrawlerService crawlerService;
 
-    public void listProblemList() {
-        logger.info("list problem list started!");
-        JSONObject r = crawlerService.crawlProblemList();
-        logger.info("list problem list finished!");
-        logger.info(r);
-    }
+    @Autowired
+    private ProblemListService problemListService;
 
-    public void listProblem() {
-        logger.info("list problem started!");
-        JSONObject r = crawlerService.crawlAllProblem();
-        logger.info("list problem finished!");
-        logger.info(r);
-    }
+    @Autowired
+    private VisitedProblemListService visitedProblemListService;
 
+    @Autowired
+    private TaskService taskService;
+
+    @Override
+    public void run() {
+        int successNumber = 0;
+        int failedNumber = 0;
+        int ignoreNumber = 0;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("start", 0);
+        jsonObject.put("end", 500);
+        JSONObject r = problemListService.listProblemList(jsonObject);
+        if (JudgeResultUtil.getResult(r)) {
+            JSONArray array = r.getJSONObject("data").getJSONArray("list");
+            JSONObject d1 = new JSONObject();
+            d1.put("wholeCount", array.size());
+            JSONObject r1 = taskService.createTask(d1);
+            if (!JudgeResultUtil.getResult(d1)) {
+                return;
+            }
+            String taskId = r1.getJSONObject("data").getString("id");
+            for (int i = 0; i < array.size(); i++) {
+                JSONObject object = array.getJSONObject(i);
+                JSONObject r2 = visitedProblemListService.isVisited(object);
+                if (JudgeResultUtil.getResult(r2)) {
+                    if (r2.getJSONObject("data").getBoolean("visited")) {
+                        ignoreNumber++;
+                        continue;
+                    }
+                    JSONObject result = crawlerService.crawlProblem(object);
+                    if (result.getIntValue("code") == Code.SUCCESS) {
+                        VisitedProblemList visitedProblemList = new VisitedProblemList();
+                        visitedProblemList.setNumber(object.getInteger("number"));
+                        JSONObject r3 = visitedProblemListService.visited((JSONObject) JSON.toJSON(visitedProblemList));
+                        if (!JudgeResultUtil.getResult(r3)) {
+                            logger.error(r3);
+                        }
+                        successNumber++;
+                    } else {
+                        failedNumber++;
+                    }
+                } else {
+                    failedNumber++;
+                    logger.error(r2);
+                }
+                JSONObject inData = new JSONObject();
+                inData.put("doneCount", i + 1);
+                inData.put("id", taskId);
+                taskService.updateDoneCount(inData);
+            }
+            JSONObject d2 = new JSONObject();
+            d2.put("successNumber", successNumber);
+            d2.put("failedNumber", failedNumber);
+            d2.put("ignoreNumber", ignoreNumber);
+            d2.put("id", taskId);
+            d2.put("status", 1);
+            taskService.closeTask(d2);
+        }
+    }
 }

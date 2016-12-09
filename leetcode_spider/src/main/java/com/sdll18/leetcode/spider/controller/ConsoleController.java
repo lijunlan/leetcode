@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.sdll18.leetcode.spider.service.CrawlerService;
 import com.sdll18.leetcode.spider.service.ProblemListService;
 import com.sdll18.leetcode.spider.service.VisitedProblemListService;
+import com.sdll18.leetcode.spider.task.ProblemListTask;
+import com.sdll18.leetcode.spider.util.FastJsonUtil;
 import com.sdll18.leetcode.spider.util.JudgeResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +39,9 @@ public class ConsoleController {
     @RequestMapping(path = "/problem/start", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject problemStartAll() {
-        return crawlerService.crawlAllProblem();
+        ProblemListTask task = new ProblemListTask();
+        task.start();
+        return FastJsonUtil.success();
     }
 
     @RequestMapping(path = "/problem/start/{number}", method = RequestMethod.POST)
