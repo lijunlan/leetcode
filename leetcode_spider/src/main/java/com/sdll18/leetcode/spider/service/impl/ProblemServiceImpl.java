@@ -83,7 +83,9 @@ public class ProblemServiceImpl implements ProblemService {
     public JSONObject listProblem(JSONObject jsonObject) {
         try {
             Integer start = jsonObject.getInteger("start");
+            start = start == null ? 0 : start;
             Integer end = jsonObject.getInteger("end");
+            end = end == null ? 20 : end;
             Page<Problem> page = new Page<>();
             page.setPageStart(start);
             page.setPageEnd(end);

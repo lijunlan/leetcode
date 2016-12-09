@@ -79,7 +79,9 @@ public class ProblemListServiceImpl implements ProblemListService {
     public JSONObject listProblemList(JSONObject jsonObject) {
         try {
             Integer start = jsonObject.getInteger("start");
+            start = start == null ? 0 : start;
             Integer end = jsonObject.getInteger("end");
+            end = end == null ? 20 : end;
             Query query = new Query();
             query.with(new Sort(new Sort.Order(Sort.Direction.DESC, "updateTime")));
             Page<ProblemList> page = new Page<>();

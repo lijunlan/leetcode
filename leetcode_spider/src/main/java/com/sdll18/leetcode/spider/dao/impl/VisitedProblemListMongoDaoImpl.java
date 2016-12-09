@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @Date: 2016-12-07
  */
 @Repository("visitedProblemListMongoDao")
-public class VisitedProblemListDaoImpl extends BaseMongoDaoImpl<VisitedProblemList> implements VisitedProblemListDao {
+public class VisitedProblemListMongoDaoImpl extends BaseMongoDaoImpl<VisitedProblemList> implements VisitedProblemListDao {
     @Override
     protected Class<VisitedProblemList> getEntityClass() {
         return VisitedProblemList.class;

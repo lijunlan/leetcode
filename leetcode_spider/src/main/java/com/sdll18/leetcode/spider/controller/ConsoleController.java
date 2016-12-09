@@ -71,6 +71,7 @@ public class ConsoleController {
     }
 
     @RequestMapping(path = "/record", method = RequestMethod.GET)
+    @ResponseBody
     public JSONObject listRecord(@RequestParam(required = false) Boolean visited,
                                  @RequestParam(required = false) Integer start,
                                  @RequestParam(required = false) Integer end) {

@@ -103,7 +103,9 @@ public class VisitedProblemListServiceImpl implements VisitedProblemListService 
     public JSONObject listVisited(JSONObject jsonObject) {
         try {
             Integer start = jsonObject.getInteger("start");
+            start = start == null ? 0 : start;
             Integer end = jsonObject.getInteger("end");
+            end = end == null ? 20 : end;
             Page<VisitedProblemList> page = new Page<>();
             page.setPageStart(start);
             page.setPageEnd(end);
