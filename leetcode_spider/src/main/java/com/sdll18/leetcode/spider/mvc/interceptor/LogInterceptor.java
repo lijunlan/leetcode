@@ -8,6 +8,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -22,14 +23,12 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Map<String, String[]> params = request.getParameterMap();
-        JSONObject jsonObject = (JSONObject) JSON.toJSON(params);
         String ip = RemoteIPUtil.getAddr(request);
-        logger.info(String.format("Request message from IP: %s ; URL is: %s ; Method is: %s ; Message is: %s",
+        logger.info(String.format("Request message from IP: %s ; URL is: %s ; Method is: %s ; Length is: %s",
                 ip,
                 request.getRequestURL().toString(),
                 request.getMethod(),
-                jsonObject.toJSONString()));
+                request.getContentLength()));
         return true;
     }
 

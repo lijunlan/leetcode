@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,14 +48,13 @@ public class CrawlerServiceImpl implements CrawlerService {
     private VisitedProblemListService visitedProblemListService;
 
     @Override
-    public JSONObject crawlProblem(String head, JSONObject jsonObject) {
+    public JSONObject crawlProblem(JSONObject head, JSONObject jsonObject) {
         try {
             ProblemList problemList = JSON.toJavaObject(jsonObject, ProblemList.class);
-            String[] heads = head.split(",");
             Map<String, String> headMap = new HashMap<>();
-            headMap.put(heads[0].split(":")[0], heads[0].split(":")[1]);
-            headMap.put(heads[1].split(":")[0], heads[1].split(":")[1]);
-            Document doc = Jsoup.connect("https://leetcode.com" + problemList.getPath()).headers(headMap).timeout(3000).get();
+            headMap.put("User-Agent", head.getString("UserAgent"));
+            headMap.put("Cookie", head.getString("Cookie"));
+            Document doc = Jsoup.connect("https://leetcode.com" + problemList.getPath()).headers(headMap).timeout(30000).get();
             Elements contentElement = doc.select("div.question-content");
             String content = contentElement.first().html();
             JSONObject inData = new JSONObject();
@@ -76,7 +74,7 @@ public class CrawlerServiceImpl implements CrawlerService {
     }
 
     @Override
-    public JSONObject crawlAllProblem(String head) {
+    public JSONObject crawlAllProblem(JSONObject head) {
         try {
             int successNumber = 0;
             int failedNumber = 0;

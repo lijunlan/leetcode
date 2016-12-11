@@ -5,7 +5,7 @@ import com.sdll18.leetcode.spider.constant.Code;
 import com.sdll18.leetcode.spider.model.ProblemList;
 import com.sdll18.leetcode.spider.service.ProblemListService;
 import com.sdll18.leetcode.spider.service.ProblemService;
-import com.sdll18.leetcode.spider.starter.Starter;
+import com.sdll18.leetcode.spider.starter.Application;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,7 +27,7 @@ import java.net.URL;
  * @Date: 2016-12-07
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = Starter.class)
+@SpringBootTest(classes = Application.class)
 public class MainTest {
 
     private static Logger logger = Logger.getLogger(MainTest.class);

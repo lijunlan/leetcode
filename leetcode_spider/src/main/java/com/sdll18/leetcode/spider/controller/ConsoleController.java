@@ -31,6 +31,9 @@ public class ConsoleController {
     @Autowired
     private VisitedProblemListService visitedProblemListService;
 
+    @Autowired
+    private ProblemListTask problemListTask;
+
     @RequestMapping(path = "/problemList/start", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject problemListStartAll() {
@@ -40,11 +43,9 @@ public class ConsoleController {
     @RequestMapping(path = "/problem/start", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject problemStartAll(@RequestBody JSONObject data) {
-        if (data.getString("head") == null)
-            return FastJsonUtil.error(Code.ERROR_MISSING_PARAMETERS, "key of head is not presented");
-        String head = data.getString("head");
-        ProblemListTask task = new ProblemListTask(head);
-        task.start();
+        if (data.getString("UserAgent") == null || data.getString("Cookie") == null)
+            return FastJsonUtil.error(Code.ERROR_MISSING_PARAMETERS, "UserAgent or Cookie is not presented");
+        problemListTask.start(data);
         return FastJsonUtil.success();
     }
 
@@ -52,15 +53,14 @@ public class ConsoleController {
     @ResponseBody
     public JSONObject problemStart(@PathVariable Integer number,
                                    @RequestBody JSONObject data) {
-        if (data.getString("head") == null)
-            return FastJsonUtil.error(Code.ERROR_MISSING_PARAMETERS, "key of head is not presented");
-        String head = data.getString("head");
+        if (data.getString("UserAgent") == null || data.getString("Cookie") == null)
+            return FastJsonUtil.error(Code.ERROR_MISSING_PARAMETERS, "UserAgent or Cookie is not presented");
         JSONObject inData = new JSONObject();
         inData.put("number", number);
         JSONObject r = problemListService.findProblemList(inData);
         if (JudgeResultUtil.getResult(r)) {
             JSONObject d1 = r.getJSONObject("data");
-            JSONObject r2 = crawlerService.crawlProblem(head, d1);
+            JSONObject r2 = crawlerService.crawlProblem(data, d1);
             return r2;
         } else {
             return r;

@@ -10,9 +10,9 @@ import com.alibaba.fastjson.JSONObject;
  */
 public interface CrawlerService {
 
-    JSONObject crawlProblem(String head, JSONObject jsonObject);
+    JSONObject crawlProblem(JSONObject head, JSONObject jsonObject);
 
-    JSONObject crawlAllProblem(String head);
+    JSONObject crawlAllProblem(JSONObject head);
 
     JSONObject crawlProblemList();
 

@@ -2,6 +2,7 @@ package com.sdll18.leetcode.spider.config;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.sdll18.leetcode.spider.mvc.converter.LogMessageConverter;
 import com.sdll18.leetcode.spider.mvc.interceptor.LogInterceptor;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,6 @@ import java.util.List;
 @EnableWebMvc
 public class SpringMVCConfiguration extends WebMvcConfigurerAdapter {
 
-
     @Override
     public Validator getValidator() {
         LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
@@ -47,13 +47,14 @@ public class SpringMVCConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
+        LogMessageConverter converter = new LogMessageConverter();
         List<MediaType> mediaTypes = new ArrayList<>();
         mediaTypes.add(MediaType.parseMediaType("text/html;charset=UTF-8"));
         mediaTypes.add(MediaType.parseMediaType("text/json;charset=UTF-8"));
         mediaTypes.add(MediaType.parseMediaType("application/json;charset=UTF-8"));
         converter.setSupportedMediaTypes(mediaTypes);
         converter.setFeatures(SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullListAsEmpty);
+        converters.add(converter);
     }
 
 

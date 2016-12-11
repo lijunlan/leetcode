@@ -12,9 +12,9 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
  */
 @SpringBootApplication(scanBasePackages = "com.sdll18.leetcode.spider")
 @ServletComponentScan(basePackages = "com.sdll18.leetcode.spider")
-public class Starter {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Starter.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }
