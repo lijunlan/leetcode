@@ -69,19 +69,19 @@ public class ProblemListTask {
                     if (JudgeResultUtil.getResult(r2)) {
                         if (r2.getJSONObject("data").getBoolean("visited")) {
                             ignoreNumber++;
-                            continue;
-                        }
-                        JSONObject result = crawlerService.crawlProblem(head, object);
-                        if (result.getIntValue("code") == Code.SUCCESS) {
-                            VisitedProblemList visitedProblemList = new VisitedProblemList();
-                            visitedProblemList.setNumber(object.getInteger("number"));
-                            JSONObject r3 = visitedProblemListService.visited((JSONObject) JSON.toJSON(visitedProblemList));
-                            if (!JudgeResultUtil.getResult(r3)) {
-                                logger.error(r3);
-                            }
-                            successNumber++;
                         } else {
-                            failedNumber++;
+                            JSONObject result = crawlerService.crawlProblem(head, object);
+                            if (result.getIntValue("code") == Code.SUCCESS) {
+                                VisitedProblemList visitedProblemList = new VisitedProblemList();
+                                visitedProblemList.setNumber(object.getInteger("number"));
+                                JSONObject r3 = visitedProblemListService.visited((JSONObject) JSON.toJSON(visitedProblemList));
+                                if (!JudgeResultUtil.getResult(r3)) {
+                                    logger.error(r3);
+                                }
+                                successNumber++;
+                            } else {
+                                failedNumber++;
+                            }
                         }
                     } else {
                         failedNumber++;

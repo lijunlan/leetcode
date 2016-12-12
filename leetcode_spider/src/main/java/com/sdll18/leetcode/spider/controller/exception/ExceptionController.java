@@ -26,6 +26,6 @@ public class ExceptionController {
     @ResponseBody
     public JSONObject handleException(Exception ex) {
         logger.error(ex.getMessage(), ex);
-        return FastJsonUtil.error(Code.ERROR_INTERNAL, "internal error");
+        return FastJsonUtil.error(Code.ERROR_INTERNAL, ex.getMessage());
     }
 }
