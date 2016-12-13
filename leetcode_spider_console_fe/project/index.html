@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spider Console</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="container">
+    <div>
+        <h1>Spider Console</h1>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#home" role="tab" data-toggle="tab">Home</a>
+            </li>
+            <li role="presentation">
+                <a href="#task" role="tab" data-toggle="tab">Task</a>
+            </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div>
+                    <h3>Problem Statics</h3>
+                    <ul>
+                        <li>Total: 111</li>
+                    </ul>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="task">
+                <div id="taskTag">
+                    <div>
+                        <div class="title-left">
+                            <h3>Task Count: {{total}}</h3>
+                        </div>
+                        <div class="title-right">
+                            <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                                Create Task
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="success">ID</th>
+                            <th class="success">Success</th>
+                            <th class="success">Failed</th>
+                            <th class="success">Ignore</th>
+                            <th class="success">Process</th>
+                            <th class="success">Start Time</th>
+                            <th class="success">End Time</th>
+                            <th class="success">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in list">
+                            <td class="active">{{item.id}}</td>
+                            <td class="active">{{item.successNumber}}</td>
+                            <td class="active">{{item.failedNumber}}</td>
+                            <td class="active">{{item.ignoreNumber}}</td>
+                            <td class="active">{{item.doneCount}} / {{item.wholeCount}}</td>
+                            <td class="active">{{item.startTime | time}}</td>
+                            <td class="active">{{item.endTime | time}}</td>
+                            <td class="active">{{item.status | status}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="page">
+                    <ul class="pager">
+                        <li class="previous" v-show="canOlder"><a @click="last">&larr; Older</a></li>
+                        <li>{{pageNumber}}</li>
+                        <li class="next" v-show="canNewer"><a @click="next">Newer &rarr;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+</body>
+</html>

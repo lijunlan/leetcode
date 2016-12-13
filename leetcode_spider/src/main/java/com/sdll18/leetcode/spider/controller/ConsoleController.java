@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sdll18.leetcode.spider.constant.Code;
 import com.sdll18.leetcode.spider.service.CrawlerService;
 import com.sdll18.leetcode.spider.service.ProblemListService;
+import com.sdll18.leetcode.spider.service.TaskService;
 import com.sdll18.leetcode.spider.service.VisitedProblemListService;
 import com.sdll18.leetcode.spider.task.ProblemListTask;
 import com.sdll18.leetcode.spider.util.FastJsonUtil;
@@ -33,6 +34,9 @@ public class ConsoleController {
 
     @Autowired
     private ProblemListTask problemListTask;
+
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping(path = "/problemList/start", method = RequestMethod.POST)
     @ResponseBody
@@ -67,7 +71,6 @@ public class ConsoleController {
         }
     }
 
-
     @RequestMapping(path = "/record", method = RequestMethod.DELETE)
     @ResponseBody
     public JSONObject recordDeleteAll() {
@@ -92,6 +95,16 @@ public class ConsoleController {
         inData.put("start", start);
         inData.put("end", end);
         return visitedProblemListService.listVisited(inData);
+    }
+
+    @RequestMapping(path = "/task", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject listTask(@RequestParam(required = false) Integer start,
+                               @RequestParam(required = false) Integer end) {
+        JSONObject inData = new JSONObject();
+        inData.put("start", start);
+        inData.put("end", end);
+        return taskService.listTask(inData);
     }
 
 }

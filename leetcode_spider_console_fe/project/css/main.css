@@ -1,0 +1,17 @@
+#taskTag {
+    min-height: 400px;
+}
+
+.title-left{
+    float: left;
+}
+
+.title-right{
+    float: right;
+}
+
+
+.title-right button {
+    margin-top: 12px;
+    margin-bottom: 10px;
+}
