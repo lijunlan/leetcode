@@ -7,7 +7,6 @@ import com.sdll18.leetcode.spider.model.Problem;
 import com.sdll18.leetcode.spider.model.page.Page;
 import com.sdll18.leetcode.spider.service.ProblemService;
 import com.sdll18.leetcode.spider.util.FastJsonUtil;
-import com.sdll18.leetcode.spider.util.PageToJSONUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -92,7 +91,7 @@ public class ProblemServiceImpl implements ProblemService {
             Query q = new Query();
             q.with(new Sort(new Sort.Order(Sort.Direction.DESC, "updateTime")));
             page = problemDao.findPage(page, q);
-            return FastJsonUtil.success(PageToJSONUtil.getJSON(page));
+            return FastJsonUtil.success(page.toJSON());
         } catch (Exception e) {
             logger.error("list problem failed", e);
             return FastJsonUtil.error(Code.ERROR_INTERNAL);

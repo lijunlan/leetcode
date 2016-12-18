@@ -7,7 +7,6 @@ import com.sdll18.leetcode.spider.model.Task;
 import com.sdll18.leetcode.spider.model.page.Page;
 import com.sdll18.leetcode.spider.service.TaskService;
 import com.sdll18.leetcode.spider.util.FastJsonUtil;
-import com.sdll18.leetcode.spider.util.PageToJSONUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -112,7 +111,7 @@ public class TaskServiceImpl implements TaskService {
             page.setPageStart(start);
             page.setPageEnd(end);
             page = taskDao.findPage(page, q);
-            return FastJsonUtil.success(PageToJSONUtil.getJSON(page));
+            return FastJsonUtil.success(page.toJSON());
         } catch (Exception e) {
             logger.error("failed to list task!", e);
             return FastJsonUtil.error(Code.ERROR_INTERNAL);

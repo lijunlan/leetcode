@@ -30,11 +30,52 @@ var taskTag = new Vue({
     }
 });
 
+var problemTag = new Vue({
+   el: '#problemTag',
+    data: {
+       total: 0,
+        list: []
+    }
+});
+
+var createTask = new Vue({
+    el: '#createTask',
+    data: {
+        Cookie:'PHPSESSID=3352hq5e8l4g22pr0oizfaqnuoc51n8u; _gat=1; csrftoken=UhJsfTNvfCGkK7xFUxqhhWSK1fkLHeY8nqzYJ2gbaiTiEe0p0SDRHxYvQBKYhQ4I; _ga=GA1.2.1845630433.1476512054; __atuvc=56%7C46%2C26%7C47%2C30%7C48%2C38%7C49%2C4%7C50; __atuvs=5850e798797350dc001',
+        UserAgent:'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.75 Safari/537.36'
+    },
+    methods: {
+        create: function () {
+            var sendData = {};
+            sendData.Cookie = this.Cookie;
+            sendData.UserAgent = this.UserAgent;
+            get = false;
+            $.ajax({
+                type: 'POST',
+                dataType : "JSON",
+                contentType: "application/json;charset=utf-8",
+                url: host + '/console/problem/start',
+                data: JSON.stringify(sendData),
+                success: function (data) {
+                    if (data.code === 200) {
+                        alert("task started");
+                        $('#my-modal').modal('hide');
+                        get = true;
+                        updateTask();
+                    } else {
+                        alert("list task failed\ncode: " + data.code + "\nmessage: " + data.msg);
+                    }
+                }
+            });
+        }
+    }
+});
+
 var page = new Vue({
     el: '#page',
     data: {
         start: 0,
-        end: 9
+        end: 10
     },
     computed: {
         canOlder: function () {
@@ -94,7 +135,7 @@ var updateTask = function () {
             }
         }
     });
-}
+};
 
 updateTask();
 

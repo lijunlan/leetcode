@@ -1,5 +1,7 @@
 package com.sdll18.leetcode.spider.model.page;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 
 /**
@@ -53,5 +55,12 @@ public class Page<T> {
 
     public void setRows(List<T> rows) {
         this.rows = rows;
+    }
+
+    public JSONObject toJSON() {
+        JSONObject r = new JSONObject();
+        r.put("list", rows);
+        r.put("total", total);
+        return r;
     }
 }

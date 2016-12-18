@@ -15,15 +15,52 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
-                <a href="#home" role="tab" data-toggle="tab">Home</a>
+                <a href="#problem" role="tab" data-toggle="tab">Problem</a>
+            </li>
+            <li role="presentation">
+                <a href="#problemList" role="tab" data-toggle="tab">Problem List</a>
             </li>
             <li role="presentation">
                 <a href="#task" role="tab" data-toggle="tab">Task</a>
             </li>
+            <li role="presentation">
+                <a href="#record" role="tab" data-toggle="tab">Record</a>
+            </li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="home">
+            <div role="tabpanel" class="tab-pane active" id="problem">
+                <div id="problemTag">
+                    <div>
+                        <div class="title-left">
+                            <h3>Problem Count: {{total}}</h3>
+                        </div>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="success">ID</th>
+                            <th class="success">Number</th>
+                            <th class="success">Name</th>
+                            <th class="success">Content</th>
+                            <th class="success">Version</th>
+                            <th class="success">Update Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in list">
+                            <td class="active">{{item.id}}</td>
+                            <td class="active">{{item.number}}</td>
+                            <td class="active">{{item.name}}</td>
+                            <td class="active">{{item.content}}</td>
+                            <td class="active">{{item.version}}</td>
+                            <td class="active">{{item.updateTime | time}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="problemList">
                 <div>
                     <h3>Problem Statics</h3>
                     <ul>
@@ -38,7 +75,8 @@
                             <h3>Task Count: {{total}}</h3>
                         </div>
                         <div class="title-right">
-                            <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#my-modal">
                                 Create Task
                             </button>
                         </div>
@@ -75,6 +113,45 @@
                         <li class="previous" v-show="canOlder"><a @click="last">&larr; Older</a></li>
                         <li>{{pageNumber}}</li>
                         <li class="next" v-show="canNewer"><a @click="next">Newer &rarr;</a></li>
+                    </ul>
+                </div>
+                <div id="my-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+                     aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div id="createTask" class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="myModalLabel">Create Task</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group task-group">
+                                    <label for="cookie" class="col-sm-2 control-label">Cookie:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="cookie" v-model="Cookie"
+                                               placeholder="Cookie">
+                                    </div>
+                                </div>
+                                <div class="form-group task-group">
+                                    <label for="user-agent" class="col-sm-2 control-label">User-Agent:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="user-agent" v-model="UserAgent"
+                                               placeholder="UserAgent">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                </button>
+                                <button type="button" class="btn btn-primary" @click="create">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="record">
+                <div>
+                    <h3>Problem Statics</h3>
+                    <ul>
+                        <li>Total: 111</li>
                     </ul>
                 </div>
             </div>
